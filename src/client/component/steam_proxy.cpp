@@ -40,7 +40,7 @@ public:
     this->clean_up_on_error();
 
     try {
-      this->start_mod("iw4-sp Singleplayer", 10180);
+      this->start_mod("iw4-sp singleplayer", 10180);
     } catch (const std::exception& ex) {
       printf("Steam: %s\n", ex.what());
     }
