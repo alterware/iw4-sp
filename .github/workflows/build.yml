@@ -78,3 +78,6 @@ jobs:
 
       - name: Upload iw4-sp binary
         run: rsync -avz iw4-sp.exe ${{ secrets.ALTERWARE_MASTER_SSH_USER }}@${{ secrets.ALTERWARE_MASTER_SSH_ADDRESS }}:${{ env.ALTERWARE_MASTER_PATH }}/iw4/
+
+      - name: Publish changes
+        run: ssh ${{ secrets.ALTERWARE_MASTER_SSH_USER }}@${{ secrets.ALTERWARE_MASTER_SSH_ADDRESS }} ${{ secrets.ALTERWARE_SSH_CHANGE_PUBLISH_COMMAND }}
