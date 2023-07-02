@@ -153,6 +153,7 @@ WEAK symbol<const char*(unsigned int stringValue)> SL_ConvertToString{0x40E990};
 WEAK symbol<void(unsigned int stringValue)> SL_AddRefToString{0x4C4BD0};
 WEAK symbol<void(unsigned int stringValue)> SL_RemoveRefToString{0x4698E0};
 
+// NET
 WEAK symbol<const char*(netadr_t a)> NET_AdrToString{0x4BF490};
 WEAK symbol<const char*()> NET_ErrorString{0x430390};
 
@@ -260,9 +261,19 @@ WEAK symbol<scrVarPub_t> scrVarPub{0x18E7508};
 WEAK symbol<scrCompilePub_t> scrCompilePub{0x156BF88};
 WEAK symbol<scrCompileGlob_t> scrCompileGlob{0x158CFC8};
 WEAK symbol<scrAnimPub_t> scrAnimPub{0x156BB68};
-WEAK symbol<bool> g_loadedImpureScript{0x168F308};
 
+WEAK symbol<bool> g_loadedImpureScript{0x168F308};
 WEAK symbol<char> g_EndPos{0x1912598};
+
+WEAK symbol<unsigned char*> g_largeLocalBuf{0x195AAF8};
+
+WEAK symbol<int> g_largeLocalPos{0x1963998};
+WEAK symbol<int> g_maxLargeLocalPos{0x195AAFC};
+
+WEAK symbol<int> g_largeLocalRightPos{0x195AAE8};
+WEAK symbol<int> g_minLargeLocalRightPos{0x195AB00};
+
+WEAK symbol<unsigned long> g_dwTlsIndex{0x1BFC750};
 
 WEAK symbol<int> com_frameTime{0x145EC7C};
 
@@ -291,14 +302,4 @@ WEAK symbol<int> numtokens{0x7441F0};
 WEAK symbol<void*> DB_GetXAssetSizeHandlers{0x733408};
 WEAK symbol<void*> DB_XAssetPool{0x7337F8};
 WEAK symbol<unsigned int> g_poolSize{0x733510};
-
-WEAK symbol<unsigned char*> g_largeLocalBuf{0x195AAF8};
-
-WEAK symbol<int> g_largeLocalPos{0x1963998};
-WEAK symbol<int> g_maxLargeLocalPos{0x195AAFC};
-
-WEAK symbol<int> g_largeLocalRightPos{0x195AAE8};
-WEAK symbol<int> g_minLargeLocalRightPos{0x195AB00};
-
-WEAK symbol<unsigned long> g_dwTlsIndex{0x1BFC750};
 } // namespace game
