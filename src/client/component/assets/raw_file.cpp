@@ -78,7 +78,7 @@ const char* com_load_info_string_load_obj(const char* file_name,
       game::FS_FOpenFileByMode(file_name, &file_handle, game::FS_READ);
   if (file_len < 0) {
     game::Com_DPrintf(game::CON_CHANNEL_SYSTEM,
-                      "Could not load %s [%s] as rawfile", file_desc,
+                      "Could not load %s [%s] as rawfile\n", file_desc,
                       file_name);
     return nullptr;
   }

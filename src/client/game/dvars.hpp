@@ -24,4 +24,7 @@ extern const game::dvar_t** g_specialops;
 extern const game::dvar_t** sv_mapname;
 
 extern const game::dvar_t** version;
+
+extern const game::dvar_t** com_developer;
+extern const game::dvar_t** com_developer_script;
 } // namespace dvars

@@ -8,6 +8,8 @@ WEAK symbol<void(int channel, const char* fmt, ...)> Com_Printf{0x41BD20};
 WEAK symbol<void(int channel, const char* fmt, ...)> Com_PrintWarning{0x406320};
 WEAK symbol<void(int channel, const char* fmt, ...)> Com_PrintError{0x4C6980};
 WEAK symbol<void(int channel, const char* fmt, ...)> Com_DPrintf{0x42B1F0};
+WEAK symbol<void(int channel, const char* msg, int error)> Com_PrintMessage{
+    0x456B70};
 WEAK symbol<void(errorParm_t code, const char* fmt, ...)> Com_Error{0x43DD90};
 WEAK symbol<void()> Com_OpenLogFile{0x603030};
 WEAK symbol<int(char* data_p)> Com_Compress{0x4316A0};
@@ -31,6 +33,7 @@ WEAK symbol<bool()> Sys_IsServerThread{0x4590E0};
 WEAK symbol<bool()> Sys_IsDatabaseThread{0x4C9380};
 WEAK symbol<void(int valueIndex, void* data)> Sys_SetValue{0x483310};
 WEAK symbol<void(int msec)> Sys_Sleep{0x4CFBE0};
+WEAK symbol<void(const char* error, ...)> Sys_Error{0x40BFF0};
 
 WEAK symbol<short(short l)> BigShort{0x40E7E0};
 WEAK symbol<short(short l)> ShortNoSwap{0x4261A0};
@@ -94,7 +97,23 @@ WEAK symbol<void(const char* error)> Scr_Error{0x4E9C50};
 WEAK symbol<void(const char* error)> Scr_ObjectError{0x470600};
 WEAK symbol<void(unsigned int paramIndex, const char* error)> Scr_ParamError{
     0x42C880};
+WEAK symbol<void()> Scr_ShutdownAllocNode{0x486BC0};
+WEAK symbol<unsigned int(const char* filename)> Scr_CreateCanonicalFilename{
+    0x43A5E0};
+
+WEAK symbol<unsigned int(unsigned int parentId, unsigned int unsignedValue)>
+    FindVariable{0x4B78B0};
+WEAK symbol<void(unsigned int parentId, unsigned int unsignedValue)>
+    RemoveVariable{0x4C2DD0};
+WEAK symbol<unsigned int(unsigned int parentId, unsigned int id)> FindObject{
+    0x49A980};
 WEAK symbol<gentity_s*(scr_entref_t entref)> GetEntity{0x4678C0};
+WEAK symbol<unsigned int(unsigned int parentId, unsigned int unsignedValue)>
+    GetVariable{0x482290};
+WEAK symbol<unsigned int(unsigned int parentId, unsigned int unsignedValue)>
+    GetNewVariable{0x4F1990};
+WEAK symbol<unsigned int(unsigned int parentId, unsigned int id)> GetObject{
+    0x4370B0};
 
 WEAK symbol<unsigned int()> Scr_GetNumParam{0x4443F0};
 WEAK symbol<void()> Scr_ClearOutParams{0x4A3A00};
@@ -110,6 +129,7 @@ WEAK symbol<void(float value)> Scr_AddFloat{0x4986E0};
 WEAK symbol<int(unsigned int index)> Scr_GetType{0x464EE0};
 WEAK symbol<void(int func, const char* name)> Scr_RegisterFunction{0x4F59C0};
 WEAK symbol<unsigned int(unsigned int index)> Scr_GetFunc{0x438E10};
+WEAK symbol<int(const char* pos)> Scr_IsInOpcodeMemory{0x47D1D0};
 
 WEAK symbol<char*(const char* filename, const char* extFilename,
                   const char* codePos, bool archive)>
@@ -119,6 +139,14 @@ WEAK symbol<int(const char* filename, const char* name)> Scr_GetFunctionHandle{
     0x462750};
 WEAK symbol<int(int handle, unsigned int paramcount)> Scr_ExecThread{0x41A2C0};
 WEAK symbol<void(unsigned __int16 handle)> Scr_FreeThread{0x4C44A0};
+
+WEAK symbol<void(sval_u* parseData, unsigned char user)> ScriptParse{0x4956B0};
+WEAK symbol<void(sval_u* val, unsigned int filePosId, unsigned int fileCountId,
+                 unsigned int scriptId, PrecacheEntry* entries,
+                 int entriesCount)>
+    ScriptCompile{0x4FFDA0};
+
+WEAK symbol<char*(int len)> TempMalloc{0x4EA7C0};
 
 // SL
 WEAK symbol<const char*(unsigned int stringValue)> SL_ConvertToString{0x40E990};
@@ -131,6 +159,11 @@ WEAK symbol<const char*()> NET_ErrorString{0x430390};
 // Memory
 WEAK symbol<void*(int size)> Hunk_AllocateTempMemory{0x492DF0};
 WEAK symbol<void*(int size, int alignment)> Hunk_AllocAlignInternal{0x486C40};
+WEAK symbol<void*(int size)> Hunk_AllocateTempMemoryHigh{0x403B40};
+WEAK symbol<HunkUser*(int maxSize, const char* name, bool fixed, int type)>
+    Hunk_UserCreate{0x4F1A10};
+WEAK symbol<void*(HunkUser* user, int size, int alignment)> Hunk_UserAlloc{
+    0x469410};
 
 // Zone
 WEAK symbol<void*(int size)> Z_VirtualAllocInternal{0x4D9CF0};
@@ -150,6 +183,7 @@ WEAK symbol<void(XZoneInfo* zoneInfo, unsigned int zoneCount,
     DB_LoadXAssets{0x4CFC90};
 WEAK symbol<char*(const char* filename, char* buf, int size)> DB_ReadRawFile{
     0x46DA60};
+WEAK symbol<int(RawFile* rawfile)> DB_GetRawFileLen{0x4D2E60};
 
 // FS
 WEAK symbol<int(const char* qpath, void** buffer)> _FS_ReadFile{0x4A5480};
@@ -221,9 +255,20 @@ WEAK symbol<CmdArgs> sv_cmd_args{0x145ABA0};
 WEAK symbol<gentity_s> g_entities{0xEAAC38};
 WEAK symbol<gclient_s> g_clients{0x10911E8};
 
+WEAK symbol<scrVmPub_t> scrVmPub{0x190DDF0};
+WEAK symbol<scrVarPub_t> scrVarPub{0x18E7508};
+WEAK symbol<scrCompilePub_t> scrCompilePub{0x156BF88};
+WEAK symbol<scrCompileGlob_t> scrCompileGlob{0x158CFC8};
+WEAK symbol<scrAnimPub_t> scrAnimPub{0x156BB68};
+WEAK symbol<bool> g_loadedImpureScript{0x168F308};
+
+WEAK symbol<char> g_EndPos{0x1912598};
+
 WEAK symbol<int> com_frameTime{0x145EC7C};
 
 WEAK symbol<bool> cin_skippable{0x73264C};
+
+WEAK symbol<int> com_fixedConsolePosition{0x145EC10};
 
 WEAK symbol<field_t> g_consoleField{0x88C700};
 WEAK symbol<ConDrawInputGlob> conDrawInputGlob{0x86E788};

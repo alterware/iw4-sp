@@ -27,4 +27,9 @@ const game::dvar_t** sv_mapname =
 
 const game::dvar_t** version =
     reinterpret_cast<const game::dvar_t**>(0x145D690);
+
+const game::dvar_t** com_developer =
+    reinterpret_cast<const game::dvar_t**>(0x145D648);
+const game::dvar_t** com_developer_script =
+    reinterpret_cast<const game::dvar_t**>(0x145EC58);
 } // namespace dvars

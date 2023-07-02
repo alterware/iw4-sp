@@ -98,7 +98,7 @@ public:
 
     register_branding_dvars();
     utils::hook(0x57DAFF, cg_draw_full_screen_debug_overlays_stub, HOOK_CALL)
-        .install()
+        .install() // hook*
         ->quick();
   }
 

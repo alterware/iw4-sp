@@ -21,6 +21,8 @@
 #undef min
 #endif
 
+#undef GetObject
+
 #include <algorithm>
 #include <cassert>
 #include <cctype>

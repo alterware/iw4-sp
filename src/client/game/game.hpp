@@ -49,6 +49,10 @@ constexpr auto CMD_MAX_NESTING = 8;
 constexpr std::size_t MAX_LOCAL_CLIENTS = 1;
 
 constexpr auto MAX_QPATH = 64;
+
+constexpr auto MAX_OPCODE_LOOKUP_SIZE = 0x1000000;
+constexpr auto MAX_SOURCEPOS_LOOKUP_SIZE = 0x800000;
+constexpr auto MAX_SOURCEBUF_LOOKUP_SIZE = 0x40000;
 } // namespace game
 
 #include "symbols.hpp"

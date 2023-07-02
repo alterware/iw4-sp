@@ -14,20 +14,340 @@ struct scr_entref_t {
   unsigned __int16 classnum;
 };
 
-typedef void(__cdecl* BuiltinMethod)(scr_entref_t);
+typedef void (*BuiltinMethod)(scr_entref_t);
 
-typedef void(__cdecl* BuiltinFunction)();
+typedef void (*BuiltinFunction)();
 
 struct BuiltinMethodDef {
   const char* actionString;
-  void(__cdecl* actionFunc)(scr_entref_t);
+  void (*actionFunc)(scr_entref_t);
   int type;
 };
 
 struct BuiltinFunctionDef {
   const char* actionString;
-  void(__cdecl* actionFunc)();
+  void (*actionFunc)();
   int type;
+};
+
+struct OpcodeLookup {
+  const char* codePos;
+  unsigned int sourcePosIndex;
+  unsigned __int16 sourcePosCount;
+  unsigned __int16 cumulOffset;
+  unsigned __int16* localVars;
+  int profileTime;
+  int profileBuiltInTime;
+  int profileUsage;
+};
+
+static_assert(sizeof(OpcodeLookup) == 0x1C);
+
+struct SourceLookup {
+  unsigned int sourcePos;
+  int type;
+};
+
+struct SaveSourceBufferInfo {
+  char* buf;
+  char* sourceBuf;
+  int len;
+};
+
+struct scrParserGlob_t {
+  OpcodeLookup* opcodeLookup;
+  unsigned int opcodeLookupMaxSize;
+  unsigned int opcodeLookupLen;
+  SourceLookup* sourcePosLookup;
+  unsigned int sourcePosLookupMaxSize;
+  unsigned int sourcePosLookupLen;
+  unsigned int sourceBufferLookupMaxSize;
+  const char* currentCodePos;
+  unsigned int currentSourcePosCount;
+  SaveSourceBufferInfo* saveSourceBufferLookup;
+  unsigned int saveSourceBufferLookupLen;
+  int delayedSourceIndex;
+  int threadStartSourceIndex;
+};
+
+static_assert(sizeof(scrParserGlob_t) == 0x34);
+
+struct SourceBufferInfo {
+  const char* codePos;
+  char* buf;
+  const char* sourceBuf;
+  int len;
+  int sortedIndex;
+  bool archive;
+  int time;
+  int avgTime;
+  int maxTime;
+  float totalTime;
+  float totalBuiltIn;
+};
+
+struct CodeOffsetMap {
+  int type;
+  unsigned int cumulOffset;
+  int codeOffset;
+  int sourcePos;
+  int newCodeOffest;
+};
+
+struct scrParserPub_t {
+  SourceBufferInfo* sourceBufferLookup;
+  unsigned int sourceBufferLookupLen;
+  const char* scriptfilename;
+  const char* sourceBuf;
+  CodeOffsetMap* codeOffsetMap;
+  unsigned int codeOffsetMapLen;
+  int useCodeOffsetMap;
+};
+
+static_assert(sizeof(scrParserPub_t) == 0x1C);
+
+struct VariableStackBuffer {
+  const char* pos;
+  unsigned __int16 size;
+  unsigned __int16 bufLen;
+  unsigned __int16 localId;
+  unsigned __int8 time;
+  char buf[1];
+};
+
+union VariableUnion {
+  int intValue;
+  float floatValue;
+  unsigned int stringValue;
+  const float* vectorValue;
+  const char* codePosValue;
+  unsigned int pointerValue;
+  VariableStackBuffer* stackValue;
+  unsigned int entityOffset;
+};
+
+struct VariableValue {
+  VariableUnion u;
+  int type;
+};
+
+struct function_stack_t {
+  const char* pos;
+  unsigned int localId;
+  unsigned int localVarCount;
+  VariableValue* top;
+  VariableValue* startTop;
+};
+
+struct function_frame_t {
+  function_stack_t fs;
+  int topType;
+};
+
+struct scrVmPub_t {
+  unsigned int* localVars;
+  VariableValue* maxstack;
+  int function_count;
+  function_frame_t* function_frame;
+  VariableValue* top;
+  bool debugCode;
+  bool abort_on_error;
+  bool terminal_error;
+  unsigned int inparamcount;
+  unsigned int outparamcount;
+  function_frame_t function_frame_start[32];
+  VariableValue stack[2048];
+};
+
+struct HunkUser {
+  HunkUser* current;
+  HunkUser* next;
+  int maxSize;
+  int end;
+  int pos;
+  const char* name;
+  bool fixed;
+  int type;
+  unsigned __int8 buf[1];
+};
+
+static_assert(sizeof(HunkUser) == 0x24);
+
+struct scrVarPub_t {
+  const char* fieldBuffer;
+  unsigned __int16 canonicalStrCount;
+  bool developer_script;
+  bool evaluate;
+  const char* error_message;
+  int error_index;
+  unsigned int time;
+  unsigned int timeArrayId;
+  unsigned int pauseArrayId;
+  unsigned int notifyArrayId;
+  unsigned int objectStackId;
+  unsigned int levelId;
+  unsigned int gameId;
+  unsigned int animId;
+  unsigned int freeEntList;
+  unsigned int tempVariable;
+  unsigned int numScriptValues[2];
+  bool bInited;
+  unsigned __int16 savecount;
+  unsigned __int16 savecountMark;
+  unsigned int checksum;
+  unsigned int entId;
+  unsigned int entFieldName;
+  HunkUser* programHunkUser;
+  const char* programBuffer;
+  const char* endScriptBuffer;
+  unsigned __int16 saveIdMap[36864];
+  unsigned __int16 saveIdMapRev[36864];
+  bool bScriptProfile;
+  float scriptProfileMinTime;
+  bool bScriptProfileBuiltin;
+  float scriptProfileBuiltinMinTime;
+  unsigned int numScriptThreads;
+  unsigned int numScriptObjects;
+  const char* varUsagePos;
+  int ext_threadcount;
+  int totalObjectRefCount;
+  volatile int totalVectorRefCount;
+  unsigned int removeId;
+};
+
+static_assert(sizeof(scrVarPub_t) == 0x2408C);
+
+struct scr_localVar_t {
+  unsigned int name;
+  unsigned int sourcePos;
+};
+
+struct scr_block_t {
+  int abortLevel;
+  int localVarsCreateCount;
+  int localVarsPublicCount;
+  int localVarsCount;
+  unsigned __int8 localVarsInitBits[8];
+  scr_localVar_t localVars[64];
+};
+
+struct scrCompilePub_t {
+  int value_count;
+  int far_function_count;
+  unsigned int loadedscripts;
+  unsigned int scriptsPos;
+  unsigned int scriptsCount;
+  unsigned int scriptsDefine;
+  unsigned int builtinFunc;
+  unsigned int builtinMeth;
+  unsigned __int16 canonicalStrings[65536];
+  const char* in_ptr;
+  bool in_ptr_valid;
+  const char* parseBuf;
+  bool script_loading;
+  bool allowedBreakpoint;
+  int developer_statement;
+  char* opcodePos;
+  unsigned int programLen;
+  int func_table_size;
+  int func_table[1024];
+  scr_block_t* pauseBlock;
+};
+
+struct CaseStatementInfo {
+  unsigned int name;
+  const char* codePos;
+  unsigned int sourcePos;
+  CaseStatementInfo* next;
+};
+
+struct BreakStatementInfo {
+  const char* codePos;
+  const char* nextCodePos;
+  BreakStatementInfo* next;
+};
+
+struct ContinueStatementInfo {
+  const char* codePos;
+  const char* nextCodePos;
+  ContinueStatementInfo* next;
+};
+
+struct PrecacheEntry {
+  unsigned __int16 filename;
+  bool include;
+  unsigned int sourcePos;
+};
+
+union sval_u {
+  int type;
+  unsigned int stringValue;
+  unsigned int idValue;
+  float floatValue;
+  int intValue;
+  sval_u* node;
+  unsigned int sourcePosValue;
+  const char* codePosValue;
+  const char* debugString;
+  scr_block_t* block;
+};
+
+struct VariableCompileValue {
+  VariableValue value;
+  sval_u sourcePos;
+};
+
+struct scrCompileGlob_t {
+  unsigned char* codePos;
+  unsigned char* prevOpcodePos;
+  unsigned int filePosId;
+  unsigned int fileCountId;
+  int cumulOffset;
+  int prevCumulOffset;
+  int maxOffset;
+  int maxCallOffset;
+  bool bConstRefCount;
+  bool in_developer_thread;
+  unsigned int developer_thread_sourcePos;
+  bool firstThread[2];
+  CaseStatementInfo* currentCaseStatement;
+  bool bCanBreak;
+  BreakStatementInfo* currentBreakStatement;
+  bool bCanContinue;
+  ContinueStatementInfo* currentContinueStatement;
+  scr_block_t** breakChildBlocks;
+  int* breakChildCount;
+  scr_block_t* breakBlock;
+  scr_block_t** continueChildBlocks;
+  int* continueChildCount;
+  bool forceNotCreate;
+  PrecacheEntry* precachescriptList;
+  VariableCompileValue value_start[32];
+};
+
+struct scr_animtree_t {
+  void* anims;
+};
+
+struct scrAnimPub_t {
+  unsigned int animtrees;
+  unsigned int animtree_node;
+  unsigned int animTreeNames;
+  scr_animtree_t xanim_lookup[2][128];
+  unsigned int xanim_num[2];
+  unsigned int animTreeIndex;
+  bool animtree_loading;
+};
+
+enum {
+  SOURCE_TYPE_BREAKPOINT = 0x1,
+  SOURCE_TYPE_CALL = 0x2,
+  SOURCE_TYPE_CALL_POINTER = 0x4,
+  SOURCE_TYPE_THREAD_START = 0x8,
+  SOURCE_TYPE_BUILTIN_CALL = 0x10,
+  SOURCE_TYPE_NOTIFY = 0x20,
+  SOURCE_TYPE_GETFUNCTION = 0x40,
+  SOURCE_TYPE_WAIT = 0x80,
 };
 
 enum {
