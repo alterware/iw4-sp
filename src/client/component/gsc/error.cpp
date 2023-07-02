@@ -6,7 +6,7 @@
 
 namespace gsc {
 namespace hunk {
-game::HunkUser* g_debugUser;
+game::HunkUser* g_debug_user_;
 
 void user_destroy(game::HunkUser* user) {
   auto* current = user->next;
@@ -21,30 +21,30 @@ void user_destroy(game::HunkUser* user) {
 
 void init_debug_memory() {
   assert(game::Sys_IsMainThread());
-  assert(!g_debugUser);
+  assert(!g_debug_user_);
 
-  g_debugUser =
+  g_debug_user_ =
       game::Hunk_UserCreate(0x1000000, "Hunk_InitDebugMemory", false, 0);
 }
 
 void shutdown_debug_memory() {
   assert(game::Sys_IsMainThread());
-  assert(g_debugUser);
+  assert(g_debug_user_);
 
-  user_destroy(g_debugUser);
-  g_debugUser = nullptr;
+  user_destroy(g_debug_user_);
+  g_debug_user_ = nullptr;
 }
 
 void* alloc_debug_mem(int size) {
   assert(game::Sys_IsMainThread());
-  assert(g_debugUser);
+  assert(g_debug_user_);
 
-  return game::Hunk_UserAlloc(g_debugUser, size, 4);
+  return game::Hunk_UserAlloc(g_debug_user_, size, 4);
 }
 
 void free_debug_mem([[maybe_unused]] void* ptr) {
   assert(game::Sys_IsMainThread());
-  assert(g_debugUser);
+  assert(g_debug_user_);
 
   // Let's hope it gets cleared by Hunk_ShutdownDebugMemory
 }
